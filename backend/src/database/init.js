@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3';
-import { readFileSync } from 'fs';
+import { readFileSync, mkdirSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import dotenv from 'dotenv';
@@ -13,6 +13,13 @@ const DB_PATH = process.env.DB_PATH || './data/monitoring.db';
 
 export function initDatabase() {
   console.log('🗄️  Initialisation de la base de données...');
+
+  // Créer le dossier data s'il n'existe pas
+  const dbDir = dirname(DB_PATH);
+  if (!existsSync(dbDir)) {
+    mkdirSync(dbDir, { recursive: true });
+    console.log(`📁 Dossier créé: ${dbDir}`);
+  }
 
   // Créer la connexion à la base de données
   const db = new Database(DB_PATH, { verbose: console.log });
