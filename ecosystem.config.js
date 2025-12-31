@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'monitoring-sites-api',
-      script: './backend/src/index.js',
+      script: './src/index.js',
       cwd: './backend',
       instances: 1,
       autorestart: true,
@@ -12,13 +12,13 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3001,
       },
-      error_file: './backend/logs/pm2-error.log',
-      out_file: './backend/logs/pm2-out.log',
+      error_file: './logs/pm2-error.log',
+      out_file: './logs/pm2-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
     },
     {
       name: 'monitoring-sites-scheduler',
-      script: './backend/src/scheduler.js',
+      script: './src/scheduler.js',
       cwd: './backend',
       instances: 1,
       autorestart: true,
@@ -27,8 +27,8 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
       },
-      error_file: './backend/logs/pm2-scheduler-error.log',
-      out_file: './backend/logs/pm2-scheduler-out.log',
+      error_file: './logs/pm2-scheduler-error.log',
+      out_file: './logs/pm2-scheduler-out.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
     },
   ],
