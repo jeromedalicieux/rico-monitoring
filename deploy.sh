@@ -17,9 +17,19 @@ NC='\033[0m' # No Color
 echo -e "${BLUE}📥 Pull des dernières modifications...${NC}"
 git pull origin main
 
-# 2. Backend - Installation des dépendances
-echo -e "${BLUE}📦 Backend - Vérification des dépendances...${NC}"
+# 2. Backend - Configuration et installation
+echo -e "${BLUE}📦 Backend - Configuration...${NC}"
 cd backend
+
+# Copier le fichier .env.production vers .env si nécessaire
+if [ ! -f ".env" ]; then
+    echo -e "${YELLOW}Création du fichier .env depuis .env.production...${NC}"
+    cp .env.production .env
+else
+    echo -e "${GREEN}✓ Fichier .env existe déjà${NC}"
+fi
+
+echo -e "${BLUE}📦 Backend - Vérification des dépendances...${NC}"
 if [ ! -d "node_modules" ] || [ package.json -nt node_modules ]; then
     echo -e "${YELLOW}Installation des dépendances backend...${NC}"
     npm install
