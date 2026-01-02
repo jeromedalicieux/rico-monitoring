@@ -9,6 +9,7 @@ import {
   createKeyword,
   updateKeyword,
   deleteKeyword,
+  createBulkSites,
 } from '../services/sites.service.js';
 
 const router = express.Router();
@@ -39,6 +40,20 @@ router.post('/', (req, res) => {
   try {
     const site = createSite(req.body);
     res.status(201).json(site);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+router.post('/bulk', (req, res) => {
+  try {
+    const { urls } = req.body;
+    if (!urls || !Array.isArray(urls)) {
+      return res.status(400).json({ error: 'Le champ "urls" doit être un tableau' });
+    }
+
+    const result = createBulkSites(urls);
+    res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

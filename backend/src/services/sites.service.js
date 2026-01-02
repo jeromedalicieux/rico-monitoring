@@ -30,6 +30,88 @@ export function createSite(data) {
   return getSiteById(result.lastInsertRowid);
 }
 
+export function createBulkSites(urls) {
+  const db = getDatabase();
+  const results = {
+    created: [],
+    skipped: [],
+    errors: [],
+  };
+
+  // Fonction pour extraire le domaine d'une URL
+  const extractDomain = (url) => {
+    try {
+      // Ajouter http:// si pas de protocole
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+      }
+      const urlObj = new URL(url);
+      return urlObj.hostname.replace('www.', '');
+    } catch {
+      return url.replace('www.', '').split('/')[0];
+    }
+  };
+
+  // Récupérer les domaines déjà existants
+  const existingDomains = db.prepare('SELECT domain FROM sites').all().map(s => s.domain);
+
+  // Traiter chaque URL
+  for (const url of urls) {
+    const trimmedUrl = url.trim();
+    if (!trimmedUrl) continue;
+
+    try {
+      const domain = extractDomain(trimmedUrl);
+
+      // Vérifier si le domaine existe déjà
+      if (existingDomains.includes(domain)) {
+        results.skipped.push({
+          url: trimmedUrl,
+          domain,
+          reason: 'Domaine déjà existant',
+        });
+        continue;
+      }
+
+      // Créer le site
+      const name = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);
+      const site = createSite({
+        domain,
+        name,
+        gmb_business_name: null,
+        gmb_city: null,
+      });
+
+      results.created.push({
+        url: trimmedUrl,
+        domain,
+        site,
+      });
+
+      // Ajouter aux domaines existants pour éviter les doublons dans le même batch
+      existingDomains.push(domain);
+
+    } catch (error) {
+      results.errors.push({
+        url: trimmedUrl,
+        error: error.message,
+      });
+    }
+  }
+
+  logger.info(`📦 Import en masse: ${results.created.length} créés, ${results.skipped.length} ignorés, ${results.errors.length} erreurs`);
+
+  return {
+    summary: {
+      total: urls.length,
+      created: results.created.length,
+      skipped: results.skipped.length,
+      errors: results.errors.length,
+    },
+    details: results,
+  };
+}
+
 export function updateSite(id, data) {
   const db = getDatabase();
   const { domain, name, gmb_business_name, gmb_city, active } = data;

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { sitesApi } from '../services/api';
-import { Plus, Trash2, Edit, Globe } from 'lucide-react';
+import { Plus, Trash2, Edit, Globe, Upload } from 'lucide-react';
+import BulkImportModal from '../components/BulkImportModal';
 
 function Sites() {
   const [sites, setSites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showBulkImport, setShowBulkImport] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     domain: '',
@@ -71,13 +73,22 @@ function Sites() {
           <h1 className="text-3xl font-bold text-gray-900">Sites</h1>
           <p className="mt-2 text-gray-600">Gérez vos sites et leurs mots-clés</p>
         </div>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="btn btn-primary flex items-center"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Ajouter un site
-        </button>
+        <div className="flex gap-3">
+          <button
+            onClick={() => setShowBulkImport(true)}
+            className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2"
+          >
+            <Upload className="w-4 h-4" />
+            Import en masse
+          </button>
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="btn btn-primary flex items-center"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Ajouter un site
+          </button>
+        </div>
       </div>
 
       {/* Formulaire d'ajout */}
@@ -184,6 +195,13 @@ function Sites() {
           ))}
         </div>
       )}
+
+      {/* Modal d'import en masse */}
+      <BulkImportModal
+        isOpen={showBulkImport}
+        onClose={() => setShowBulkImport(false)}
+        onSuccess={loadSites}
+      />
     </div>
   );
 }
