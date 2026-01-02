@@ -8,7 +8,7 @@
 - Dépendances installées (`npm install` backend + frontend)
 - Base de données initialisée (`npm run init-db`)
 - Frontend buildé (`npm run build`)
-- DNS configuré: `rico.daidyl.com` → `72.62.16.221`
+- DNS configuré: `rico.vvesp.com` → `72.62.16.221`
 - Certificat SSL obtenu avec Let's Encrypt
 
 ⏸️ **En cours:**
@@ -31,10 +31,10 @@ sudo nano /etc/nginx/sites-available/monitoring-sites
 
 **Ligne à modifier:**
 ```nginx
-server_name rico.daidyl.com;  # Changer "monitoring.votredomaine.com" par "rico.daidyl.com"
+server_name rico.vvesp.com;  # Changer "monitoring.votredomaine.com" par "rico.vvesp.com"
 ```
 
-**Chemin du projet à vérifier (ligne ~11):**
+**Chemin du projet à vérifier (ligne ~16):**
 ```nginx
 root /var/www/rico/frontend/dist;  # Vérifier que c'est bien "/var/www/rico" et pas "/var/www/monitoring-sites"
 ```
@@ -52,16 +52,9 @@ sudo systemctl reload nginx
 
 ### 2. Installer le certificat SSL
 
-Le certificat a déjà été obtenu et est stocké dans:
-- Certificate: `/etc/letsencrypt/live/rico.daidyl.com/fullchain.pem`
-- Key: `/etc/letsencrypt/live/rico.daidyl.com/privkey.pem`
-
 ```bash
-# Installer le certificat dans Nginx
-sudo certbot install --cert-name rico.daidyl.com
-
-# OU relancer la commande complète (va détecter le server_name cette fois)
-sudo certbot --nginx -d rico.daidyl.com
+# Obtenir et installer le certificat SSL
+sudo certbot --nginx -d rico.vvesp.com
 ```
 
 Certbot va automatiquement:
@@ -100,18 +93,18 @@ curl http://localhost:3001/health
 # Devrait retourner: {"status":"ok","timestamp":"..."}
 
 # B. Test via HTTP (depuis n'importe où)
-curl http://rico.daidyl.com/health
+curl http://rico.vvesp.com/health
 
 # C. Test via HTTPS (après installation SSL)
-curl https://rico.daidyl.com/health
+curl https://rico.vvesp.com/health
 
 # D. Ouvrir dans le navigateur
-# https://rico.daidyl.com
+# https://rico.vvesp.com
 ```
 
 ### 5. Ajouter le premier site à monitorer
 
-Dans le navigateur, aller sur `https://rico.daidyl.com`:
+Dans le navigateur, aller sur `https://rico.vvesp.com`:
 
 1. Cliquer sur "Sites"
 2. Cliquer sur "Ajouter un site"
@@ -241,9 +234,9 @@ Found the following certs:
     Domains: vvesp.com www.vvesp.com
     Expiry Date: ...
 
-  Certificate Name: rico.daidyl.com
-    Domains: rico.daidyl.com
-    Expiry Date: 2026-03-31
+  Certificate Name: rico.vvesp.com
+    Domains: rico.vvesp.com
+    Expiry Date: 2026-04-01
 ```
 
 ## Commandes utiles pour la maintenance
