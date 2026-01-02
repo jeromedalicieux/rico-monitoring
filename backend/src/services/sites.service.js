@@ -82,10 +82,23 @@ export function createBulkSites(urls) {
         gmb_city: null,
       });
 
+      // Créer automatiquement un mot-clé basé sur le domaine (pour les EMD)
+      // Exemple: expert-humidite-paris.fr → "expert humidite paris"
+      const domainWithoutExtension = domain.split('.')[0]; // Enlever .fr, .com, etc.
+      const keyword = domainWithoutExtension.replace(/-/g, ' '); // Remplacer tirets par espaces
+
+      try {
+        createKeyword(site.id, keyword);
+        logger.info(`  ✓ Mot-clé créé: "${keyword}"`);
+      } catch (error) {
+        logger.warn(`  ⚠️ Impossible de créer le mot-clé: ${error.message}`);
+      }
+
       results.created.push({
         url: trimmedUrl,
         domain,
         site,
+        keyword, // Ajouter le mot-clé dans les résultats
       });
 
       // Ajouter aux domaines existants pour éviter les doublons dans le même batch

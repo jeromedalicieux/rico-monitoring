@@ -127,6 +127,7 @@ export default function BulkImportModal({ isOpen, onClose, onSuccess }) {
                       {result.details.created.map((item, idx) => (
                         <div key={idx} className="text-sm text-green-800">
                           ✓ {item.domain} - {item.site.name}
+                          {item.keyword && <span className="text-green-600 ml-2">(mot-clé: "{item.keyword}")</span>}
                         </div>
                       ))}
                     </div>
